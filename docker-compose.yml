@@ -1,0 +1,43 @@
+
+services:
+  ai-service:
+    build: ./ai-service
+    container_name: ai-service
+    ports:
+      - "8000:8000"
+    networks:
+      - ai-monitoring-net
+    depends_on:
+      - ollama-llm
+
+  ollama-llm:
+    container_name: ollama-llm
+    image: ollama/ollama:latest
+    ports:
+      - "11434:11434"  
+    networks:
+      - ai-monitoring-net
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    volumes:
+      - ./prometheus:/etc/prometheus/
+    ports:
+      - "9090:9090"
+    networks:
+      - ai-monitoring-net
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    networks:
+      - ai-monitoring-net
+    depends_on:
+      - prometheus
+
+networks:
+  ai-monitoring-net:
+    external: true
