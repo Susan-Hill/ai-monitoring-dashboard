@@ -31,6 +31,9 @@ services:
   grafana:
     image: grafana/grafana:latest
     container_name: grafana
+    environment:
+      - GF_SERVER_ROOT_URL=${GRAFANA_ROOT_URL}
+      - GF_SERVER_SERVE_FROM_SUB_PATH=true
     ports:
       - "3000:3000"
     networks:
